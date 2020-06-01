@@ -2,6 +2,13 @@
 
 All notable changes to `vercel-sapper` will be documented in this file.
 
+## 0.42.0 - 2020-06
+### Added
+- Add option to include extra files in lambda
+
+### Updated
+- Don't include static files in lambda function by default
+
 ## 0.41.0 - 2020-05-24
 ### Updated
 - Add debug server when server instance isn't found

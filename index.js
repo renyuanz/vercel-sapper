@@ -44,20 +44,27 @@ exports.build = async ({
   const launcherFiles = getLauncherFiles()
   const staticFiles = await globAndPrefix(entrypointDir, 'static')
   const applicationFiles = await globAndPrefix(entrypointDir, '__sapper__')
+  const includeFiles = config.include.reduce(
+    (files, path) => ({
+      ...files,
+      ...(await globAndPrefix(entrypointDir, path))
+    }),
+    {}
+  )
 
   // Use the system-installed version of `node` when running via `vercel dev`
   const runtime = meta.isDev ? 'nodejs' : nodeVersion.runtime
 
   const lambda = await createLambda({
     files: {
-      ...staticFiles,
+      ...includeFiles,
       ...launcherFiles,
       ...prodDependencies,
       ...applicationFiles
     },
     handler: 'launcher.launcher',
     runtime: runtime
-  }).catch(e => {
+  }).catch((e) => {
     console.error('createLambda.error', e)
     console.error('createLambda.config', config)
   })
@@ -93,7 +100,7 @@ exports.build = async ({
 
 function serve(arr, filePath, routePath) {
   return Object.keys(arr)
-    .filter(path => path.startsWith(filePath))
+    .filter((path) => path.startsWith(filePath))
     .reduce((obj, key) => {
       obj[key.replace(filePath, routePath)] = arr[key]
       return obj
