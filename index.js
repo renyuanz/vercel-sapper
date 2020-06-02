@@ -44,9 +44,10 @@ exports.build = async ({
   const launcherFiles = getLauncherFiles()
   const staticFiles = await globAndPrefix(entrypointDir, 'static')
   const applicationFiles = await globAndPrefix(entrypointDir, '__sapper__')
-  const includeFiles = Promise.all(
+  const includeFilesArray = await Promise.all(
     config.include.map((path) => globAndPrefix(entrypointDir, path))
-  ).reduce(
+  )
+  const includeFiles = includeFilesArray.reduce(
     (all, files) => ({
       ...all,
       ...files
