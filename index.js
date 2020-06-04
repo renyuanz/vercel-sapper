@@ -55,6 +55,15 @@ exports.build = async ({
     {}
   )
 
+  // To avoid a sirv error, add 1 file from the static folder
+  const sirvFix = !Object.keys(includeFiles).find((p) => p.startsWith('static'))
+  if (sirvFix) {
+    const first = Object.keys(staticFiles)[0]
+    if (first) {
+      includeFiles[first] = staticFiles[first]
+    }
+  }
+
   // Use the system-installed version of `node` when running via `vercel dev`
   const runtime = meta.isDev ? 'nodejs' : nodeVersion.runtime
 
